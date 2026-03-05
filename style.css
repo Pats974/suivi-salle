@@ -1,0 +1,32 @@
+:root { --b:#e6e6e6; --bg:#0b0b0c; --fg:#f4f4f4; --muted:#b6b6b6; --card:#141417; }
+* { box-sizing: border-box; }
+body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background:var(--bg); color:var(--fg); }
+.wrap { max-width: 980px; margin: 0 auto; padding: 16px; }
+h1 { margin: 0 0 6px; font-size: 22px; }
+h2 { margin: 10px 0; font-size: 18px; }
+h3 { margin: 0 0 10px; font-size: 16px; }
+.muted { color: var(--muted); }
+.small { font-size: 12px; }
+.card { background: var(--card); border: 1px solid #1f1f25; border-radius: 12px; padding: 14px; margin: 12px 0; }
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; align-items: end; }
+@media (max-width:720px){ .grid{ grid-template-columns: 1fr; } .span2{ grid-column:auto; } }
+label { display: grid; gap: 6px; font-size: 13px; }
+input, select, button { width: 100%; padding: 10px; border-radius: 10px; border: 1px solid #2a2a33; background: #0f0f13; color: var(--fg); }
+button { cursor: pointer; border-color:#3a3a48; background:#1a1a24; }
+button.ghost { background: transparent; }
+button.danger { border-color: #7a2b2b; }
+.row { display:flex; gap: 10px; }
+.row > * { flex: 1; }
+.tabs { display:flex; gap:8px; flex-wrap: wrap; margin-top: 10px; }
+.tab { width:auto; padding: 8px 10px; border-radius: 999px; }
+.tab.active { border-color:#6a6a86; }
+.panel { display:none; }
+.panel.show { display:block; }
+.tableWrap { overflow:auto; }
+table { width:100%; border-collapse: collapse; font-size: 13px; }
+th, td { padding: 8px; border-bottom: 1px solid #24242c; vertical-align: top; white-space: nowrap; }
+td.note { white-space: normal; min-width: 180px; }
+.hint { margin-top: -2px; font-size: 12px; color: var(--muted); }
+.pr { padding: 10px; border-radius: 10px; border: 1px dashed #2f2f3a; color: var(--muted); }
+.fileBtn { display:inline-flex; align-items:center; justify-content:center; padding:10px; border-radius:10px; border:1px solid #2a2a33; background:#0f0f13; cursor:pointer; }
+.fileBtn input{ display:none; }
