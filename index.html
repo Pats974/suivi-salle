@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Gym Tracker</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <header class="wrap">
+    <h1>Gym Tracker</h1>
+    <p class="muted">Suivi poids / reps + historique (données dans ton navigateur)</p>
+    <nav class="tabs">
+      <button class="tab active" data-tab="log">Ajouter</button>
+      <button class="tab" data-tab="history">Historique</button>
+      <button class="tab" data-tab="stats">Stats</button>
+      <button class="tab" data-tab="body">Poids corporel</button>
+      <button class="tab" data-tab="backup">Backup</button>
+    </nav>
+  </header>
+
+  <main class="wrap">
+    <!-- AJOUT -->
+    <section id="log" class="panel show">
+      <h2>Ajouter une entrée</h2>
+
+      <form id="entryForm" class="card grid">
+        <label>
+          Date
+          <input id="date" type="date" required />
+        </label>
+
+        <label>
+          Séance
+          <select id="sessionType" required>
+            <option value="Jambes">Jambes</option>
+            <option value="Push">Push</option>
+            <option value="Pull">Pull</option>
+            <option value="Bras">Bras</option>
+            <option value="Autre">Autre</option>
+          </select>
+        </label>
+
+        <label class="span2">
+          Exercice
+          <input id="exercise" list="exerciseList" placeholder="ex: DC, Squat..." required />
+          <datalist id="exerciseList"></datalist>
+          <div id="exerciseHint" class="hint"></div>
+        </label>
+
+        <label>
+          Unité
+          <select id="unit">
+            <option value="kg total">kg total</option>
+            <option value="kg par haltère">kg par haltère</option>
+            <option value="kg par côté">kg par côté</option>
+            <option value="reps (poids du corps)">reps (poids du corps)</option>
+          </select>
+        </label>
+
+        <label>
+          Poids (kg)
+          <input id="weight" type="number" step="0.5" min="0" placeholder="ex: 55" />
+        </label>
+
+        <label>
+          Reps
+          <input id="reps" type="number" step="1" min="0" placeholder="ex: 10" />
+        </label>
+
+        <label>
+          Séries
+          <input id="sets" type="number" step="1" min="1" value="3" />
+        </label>
+
+        <label class="span2">
+          Note (optionnel)
+          <input id="note" type="text" placeholder="ex: dernière série dure, machine fausse..." />
+        </label>
+
+        <div class="span2 row">
+          <button type="submit">Enregistrer</button>
+          <button type="button" id="clearForm" class="ghost">Vider</button>
+        </div>
+      </form>
+
+      <div class="card">
+        <h3>Dernières entrées</h3>
+        <div class="tableWrap">
+          <table id="recentTable">
+            <thead>
+              <tr>
+                <th>Date</th><th>Séance</th><th>Exercice</th><th>Poids</th><th>Reps</th><th>Séries</th><th>Note</th><th></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- HISTORIQUE -->
+    <section id="history" class="panel">
+      <h2>Historique</h2>
+
+      <div class="card grid">
+        <label>
+          Filtre exercice
+          <select id="filterExercise">
+            <option value="">Tous</option>
+          </select>
+        </label>
+
+        <label>
+          Filtre séance
+          <select id="filterSession">
+            <option value="">Toutes</option>
+            <option>Jambes</option><option>Push</option><option>Pull</option><option>Bras</option><option>Autre</option>
+          </select>
+        </label>
+
+        <label>
+          Recherche note
+          <input id="filterText" type="text" placeholder="ex: machine, record..." />
+        </label>
+
+        <div class="row">
+          <button id="clearFilters" class="ghost" type="button">Reset filtres</button>
+        </div>
+      </div>
+
+      <div class="card tableWrap">
+        <table id="historyTable">
+          <thead>
+            <tr>
+              <th>Date</th><th>Séance</th><th>Exercice</th><th>Unité</th><th>Poids</th><th>Reps</th><th>Séries</th><th>Note</th><th></th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- STATS -->
+    <section id="stats" class="panel">
+      <h2>Stats</h2>
+
+      <div class="card grid">
+        <label class="span2">
+          Exercice
+          <select id="statsExercise"></select>
+        </label>
+
+        <label>
+          Métrique
+          <select id="metric">
+            <option value="weight">Poids</option>
+            <option value="reps">Reps</option>
+            <option value="e1rm">e1RM (estimation)</option>
+          </select>
+        </label>
+
+        <div class="span2">
+          <div id="prBox" class="pr"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <canvas id="chart" height="120"></canvas>
+        <p class="muted small">e1RM = poids × (1 + reps/30). C’est une estimation pratique.</p>
+      </div>
+    </section>
+
+    <!-- POIDS CORPOREL -->
+    <section id="body" class="panel">
+      <h2>Poids corporel</h2>
+
+      <form id="bwForm" class="card grid">
+        <label>
+          Date
+          <input id="bwDate" type="date" required />
+        </label>
+        <label>
+          Poids (kg)
+          <input id="bw" type="number" step="0.1" min="0" required />
+        </label>
+        <div class="row">
+          <button type="submit">Ajouter</button>
+        </div>
+      </form>
+
+      <div class="card">
+        <canvas id="bwChart" height="120"></canvas>
+      </div>
+
+      <div class="card tableWrap">
+        <table id="bwTable">
+          <thead><tr><th>Date</th><th>Poids (kg)</th><th></th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- BACKUP -->
+    <section id="backup" class="panel">
+      <h2>Backup</h2>
+      <div class="card grid">
+        <div class="row">
+          <button id="exportBtn" type="button">Exporter JSON</button>
+          <label class="fileBtn">
+            Importer JSON
+            <input id="importFile" type="file" accept="application/json" />
+          </label>
+          <button id="wipeBtn" type="button" class="danger ghost">Tout effacer (local)</button>
+        </div>
+        <p class="muted small">
+          Conseil : fais un export de temps en temps. Si tu changes d’appareil, importe le fichier.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="wrap muted small">
+    <span>100% statique (GitHub Pages) + stockage navigateur.</span>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
