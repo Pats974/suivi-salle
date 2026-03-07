@@ -55,6 +55,7 @@ label { display: grid; gap: 6px; font-size: 13px; }
 
 input,
 select,
+textarea,
 button {
   width: 100%;
   min-height: 44px;
@@ -64,6 +65,12 @@ button {
   background: var(--input-bg);
   color: var(--fg);
   font-size: 16px; /* évite le zoom iOS auto */
+}
+
+
+textarea {
+  resize: vertical;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
 }
 
 button {

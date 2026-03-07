@@ -208,12 +208,17 @@
       <div class="card grid">
         <div class="row">
           <button id="exportBtn" type="button">Exporter JSON</button>
+          <button id="extractBtn" type="button" class="ghost">Extraire ici</button>
           <label class="fileBtn">
             Importer JSON
             <input id="importFile" type="file" accept="application/json" />
           </label>
           <button id="wipeBtn" type="button" class="danger ghost">Tout effacer (local)</button>
         </div>
+        <label class="span2">
+          Extraction JSON (copier/coller)
+          <textarea id="extractOutput" rows="8" readonly placeholder="Clique sur &quot;Extraire ici&quot; pour afficher les données JSON."></textarea>
+        </label>
         <p class="muted small">
           Conseil : fais un export de temps en temps. Si tu changes d’appareil, importe le fichier.
         </p>
