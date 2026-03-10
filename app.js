@@ -288,16 +288,10 @@ function renderHistory() {
 
   const cards = $("#historyCards");
   if (cards) cards.innerHTML = "";
-  const entries = getFilteredEntries();
-
-  const tbody = $("#historyTable tbody");
-  tbody.innerHTML = "";
-
-  const cards = $("#historyCards");
-  cards.innerHTML = "";
 
   entries.forEach(e => {
-    const noteText = e.note?.trim() ? e.note : "—";
+    const noteText = (e.note ?? "").trim() || "—";
+
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td>${e.date}</td>
@@ -312,24 +306,26 @@ function renderHistory() {
     `;
     tbody.appendChild(tr);
 
-    const card = document.createElement("article");
-    card.className = "historyCard";
-    card.innerHTML = `
-      <div class="historyCardGrid">
-        <div class="historyItem"><span class="historyLabel">Date</span><span class="historyValue">${e.date}</span></div>
-        <div class="historyItem"><span class="historyLabel">Séance</span><span class="historyValue">${escapeHtml(e.sessionType)}</span></div>
-        <div class="historyItem"><span class="historyLabel">Exercice</span><span class="historyValue">${escapeHtml(e.exercise)}</span></div>
-        <div class="historyItem"><span class="historyLabel">Unité</span><span class="historyValue">${escapeHtml(e.unit)}</span></div>
-        <div class="historyItem"><span class="historyLabel">Poids</span><span class="historyValue">${escapeHtml(formatWeight(e)) || "—"}</span></div>
-        <div class="historyItem"><span class="historyLabel">Reps</span><span class="historyValue">${e.reps ?? "—"}</span></div>
-        <div class="historyItem"><span class="historyLabel">Séries</span><span class="historyValue">${e.sets ?? "—"}</span></div>
-        <div class="historyItem"><span class="historyLabel">Note</span><span class="historyValue">${escapeHtml(noteText)}</span></div>
-      </div>
-      <div class="historyCardActions">
-        <button class="ghost" data-del="${e.id}">🗑️ Supprimer</button>
-      </div>
-    `;
-    if (cards) cards.appendChild(card);
+    if (cards) {
+      const card = document.createElement("article");
+      card.className = "historyCard";
+      card.innerHTML = `
+        <div class="historyCardGrid">
+          <div class="historyItem"><span class="historyLabel">Date</span><span class="historyValue">${e.date}</span></div>
+          <div class="historyItem"><span class="historyLabel">Séance</span><span class="historyValue">${escapeHtml(e.sessionType)}</span></div>
+          <div class="historyItem"><span class="historyLabel">Exercice</span><span class="historyValue">${escapeHtml(e.exercise)}</span></div>
+          <div class="historyItem"><span class="historyLabel">Unité</span><span class="historyValue">${escapeHtml(e.unit)}</span></div>
+          <div class="historyItem"><span class="historyLabel">Poids</span><span class="historyValue">${escapeHtml(formatWeight(e)) || "—"}</span></div>
+          <div class="historyItem"><span class="historyLabel">Reps</span><span class="historyValue">${e.reps ?? "—"}</span></div>
+          <div class="historyItem"><span class="historyLabel">Séries</span><span class="historyValue">${e.sets ?? "—"}</span></div>
+          <div class="historyItem"><span class="historyLabel">Note</span><span class="historyValue">${escapeHtml(noteText)}</span></div>
+        </div>
+        <div class="historyCardActions">
+          <button class="ghost" data-del="${e.id}">🗑️ Supprimer</button>
+        </div>
+      `;
+      cards.appendChild(card);
+    }
   });
 
   if (cards && entries.length === 0) {
@@ -342,6 +338,7 @@ function renderHistory() {
     btn.addEventListener("click", () => deleteEntry(btn.dataset.del));
   });
 }
+
 
 on("#clearFilters", "click", () => {
   const ex = $("#filterExercise");
@@ -517,7 +514,7 @@ on("#extractBtn", "click", async () => {
   output.value = getExportJson();
   output.focus();
   output.select();
- 
+
   try {
     await navigator.clipboard.writeText(output.value);
     alert("JSON copié dans le presse-papiers.");
