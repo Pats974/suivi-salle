@@ -401,13 +401,34 @@ function renderBody() {
 }
 
 // ---------- Backup
+function getExportJson() {
+  return JSON.stringify(state, null, 2);
+}
+
 $("#exportBtn").addEventListener("click", () => {
-  const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+  const blob = new Blob([getExportJson()], { type: "application/json" });
   const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
+  const url = URL.createObjectURL(blob);
+  a.href = url;
   a.download = `gym-tracker-backup-${todayISO()}.json`;
   a.click();
-  URL.revokeObjectURL(a.href);
+
+  // Safari iOS peut échouer si on révoque trop tôt.
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+});
+
+$("#extractBtn").addEventListener("click", async () => {
+  const output = $("#extractOutput");
+  output.value = getExportJson();
+  output.focus();
+  output.select();
+
+  try {
+    await navigator.clipboard.writeText(output.value);
+    alert("JSON copié dans le presse-papiers.");
+  } catch {
+    alert("JSON affiché ci-dessous. Copie manuelle si besoin.");
+  }
 });
 
 $("#importFile").addEventListener("change", async (ev) => {
