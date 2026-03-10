@@ -288,10 +288,16 @@ function renderHistory() {
 
   const cards = $("#historyCards");
   if (cards) cards.innerHTML = "";
+  const entries = getFilteredEntries();
+
+  const tbody = $("#historyTable tbody");
+  tbody.innerHTML = "";
+
+  const cards = $("#historyCards");
+  cards.innerHTML = "";
 
   entries.forEach(e => {
     const noteText = e.note?.trim() ? e.note : "—";
-
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td>${e.date}</td>
@@ -511,7 +517,7 @@ on("#extractBtn", "click", async () => {
   output.value = getExportJson();
   output.focus();
   output.select();
-
+ 
   try {
     await navigator.clipboard.writeText(output.value);
     alert("JSON copié dans le presse-papiers.");
