@@ -9,21 +9,21 @@
 </head>
 <body>
   <header class="wrap">
-    <h1>Gym Tracker</h1>
-    <p class="muted">Suivi poids / reps + historique (données dans ton navigateur)</p>
+    <h1>🏋️ Gym Tracker ✨</h1>
+    <p class="muted">Ton suivi muscu, version motivante 💪 (données stockées dans ton navigateur)</p>
     <nav class="tabs">
-      <button class="tab active" data-tab="log">Ajouter</button>
-      <button class="tab" data-tab="history">Historique</button>
-      <button class="tab" data-tab="stats">Stats</button>
-      <button class="tab" data-tab="body">Poids corporel</button>
-      <button class="tab" data-tab="backup">Backup</button>
+      <button class="tab active" data-tab="log">➕ Ajouter</button>
+      <button class="tab" data-tab="history">📚 Historique</button>
+      <button class="tab" data-tab="stats">📈 Stats</button>
+      <button class="tab" data-tab="body">⚖️ Poids corporel</button>
+      <button class="tab" data-tab="backup">💾 Backup</button>
     </nav>
   </header>
 
   <main class="wrap">
     <!-- AJOUT -->
     <section id="log" class="panel show">
-      <h2>Ajouter une entrée</h2>
+      <h2>🔥 Ajouter une entrée</h2>
 
       <form id="entryForm" class="card grid">
         <label>
@@ -80,13 +80,13 @@
         </label>
 
         <div class="span2 row">
-          <button type="submit">Enregistrer</button>
-          <button type="button" id="clearForm" class="ghost">Vider</button>
+          <button type="submit">✅ Enregistrer</button>
+          <button type="button" id="clearForm" class="ghost">🧹 Vider</button>
         </div>
       </form>
 
       <div class="card">
-        <h3>Dernières entrées</h3>
+        <h3>🕒 Dernières entrées</h3>
         <div class="tableWrap">
           <table id="recentTable">
             <thead>
@@ -102,7 +102,7 @@
 
     <!-- HISTORIQUE -->
     <section id="history" class="panel">
-      <h2>Historique</h2>
+      <h2>🗂️ Historique</h2>
 
       <div class="card grid">
         <label>
@@ -126,7 +126,7 @@
         </label>
 
         <div class="row">
-          <button id="clearFilters" class="ghost" type="button">Reset filtres</button>
+          <button id="clearFilters" class="ghost" type="button">🧽 Reset filtres</button>
         </div>
       </div>
 
@@ -144,7 +144,7 @@
 
     <!-- STATS -->
     <section id="stats" class="panel">
-      <h2>Stats</h2>
+      <h2>🎯 Stats</h2>
 
       <div class="card grid">
         <label class="span2">
@@ -174,7 +174,7 @@
 
     <!-- POIDS CORPOREL -->
     <section id="body" class="panel">
-      <h2>Poids corporel</h2>
+      <h2>🌟 Poids corporel</h2>
 
       <form id="bwForm" class="card grid">
         <label>
@@ -186,7 +186,7 @@
           <input id="bw" type="number" step="0.1" min="0" required />
         </label>
         <div class="row">
-          <button type="submit">Ajouter</button>
+          <button type="submit">➕ Ajouter</button>
         </div>
       </form>
 
@@ -204,16 +204,16 @@
 
     <!-- BACKUP -->
     <section id="backup" class="panel">
-      <h2>Backup</h2>
+      <h2>🛟 Backup</h2>
       <div class="card grid">
         <div class="row">
-          <button id="exportBtn" type="button">Exporter JSON</button>
-          <button id="extractBtn" type="button" class="ghost">Extraire ici</button>
+          <button id="exportBtn" type="button">📤 Exporter JSON</button>
+          <button id="extractBtn" type="button" class="ghost">📋 Extraire ici</button>
           <label class="fileBtn">
             Importer JSON
             <input id="importFile" type="file" accept="application/json" />
           </label>
-          <button id="wipeBtn" type="button" class="danger ghost">Tout effacer (local)</button>
+          <button id="wipeBtn" type="button" class="danger ghost">🗑️ Tout effacer (local)</button>
         </div>
         <label class="span2">
           Extraction JSON (copier/coller)
