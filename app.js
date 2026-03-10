@@ -80,12 +80,20 @@ const state = loadData();
 // ---------- UI helpers
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => document.querySelectorAll(s);
+const on = (selector, event, handler) => {
+  const el = $(selector);
+  if (el) el.addEventListener(event, handler);
+};
 
 function setTab(id) {
+  const panel = $("#" + id);
+  const tab = document.querySelector(`.tab[data-tab="${id}"]`);
+  if (!panel || !tab) return;
+
   $$(".panel").forEach(p => p.classList.remove("show"));
   $$(".tab").forEach(b => b.classList.remove("active"));
-  $("#" + id).classList.add("show");
-  document.querySelector(`.tab[data-tab="${id}"]`).classList.add("active");
+  panel.classList.add("show");
+  tab.classList.add("active");
 }
 
 // ---------- Tabs
@@ -96,6 +104,7 @@ $$(".tab").forEach(btn => {
 // ---------- Populate lists
 function refreshExerciseDatalist() {
   const dl = $("#exerciseList");
+  if (!dl) return;
   dl.innerHTML = "";
   state.exercises
     .slice()
@@ -109,6 +118,7 @@ function refreshExerciseDatalist() {
 
 function refreshFilterExerciseSelect() {
   const sel = $("#filterExercise");
+  if (!sel) return;
   const current = sel.value;
   const names = Array.from(new Set(state.entries.map(e => e.exercise))).sort((a,b)=>a.localeCompare(b));
 
@@ -118,6 +128,7 @@ function refreshFilterExerciseSelect() {
 
 function refreshStatsExerciseSelect() {
   const sel = $("#statsExercise");
+  if (!sel) return;
   const current = sel.value;
   const names = Array.from(new Set([
     ...state.entries.map(e=>e.exercise),
@@ -134,43 +145,64 @@ function findExerciseByName(name) {
 }
 
 function updateExerciseHint() {
-  const exName = $("#exercise").value.trim();
-  const ex = findExerciseByName(exName);
+  const exInput = $("#exercise");
   const hint = $("#exerciseHint");
+  if (!exInput || !hint) return;
+
+  const exName = exInput.value.trim();
+  const ex = findExerciseByName(exName);
   if (!ex) { hint.textContent = "Astuce: si tu tapes un nouvel exercice, il sera ajouté automatiquement."; return; }
 
   // auto session & unit
-  $("#sessionType").value = ex.group || $("#sessionType").value;
-  $("#unit").value = ex.unit || $("#unit").value;
+  const session = $("#sessionType");
+  const unit = $("#unit");
+  if (session) session.value = ex.group || session.value;
+  if (unit) unit.value = ex.unit || unit.value;
 
   const baseTxt = (ex.baseline != null) ? `Repère: ${ex.baseline} (${ex.unit})` : `Repère: —`;
   const noteTxt = ex.note ? ` • ${ex.note}` : "";
   hint.textContent = baseTxt + noteTxt;
 }
 
-$("#exercise").addEventListener("input", updateExerciseHint);
+on("#exercise", "input", updateExerciseHint);
 
-$("#clearForm").addEventListener("click", () => {
-  $("#exercise").value = "";
-  $("#weight").value = "";
-  $("#reps").value = "";
-  $("#sets").value = "3";
-  $("#note").value = "";
-  $("#exerciseHint").textContent = "";
+on("#clearForm", "click", () => {
+  const exercise = $("#exercise");
+  const weight = $("#weight");
+  const reps = $("#reps");
+  const sets = $("#sets");
+  const note = $("#note");
+  const hint = $("#exerciseHint");
+  if (exercise) exercise.value = "";
+  if (weight) weight.value = "";
+  if (reps) reps.value = "";
+  if (sets) sets.value = "3";
+  if (note) note.value = "";
+  if (hint) hint.textContent = "";
 });
 
 // ---------- Add entry
-$("#entryForm").addEventListener("submit", (ev) => {
+on("#entryForm", "submit", (ev) => {
   ev.preventDefault();
 
-  const date = $("#date").value;
-  const sessionType = $("#sessionType").value;
-  const exercise = $("#exercise").value.trim();
-  const unit = $("#unit").value;
-  const weight = $("#weight").value === "" ? null : Number($("#weight").value);
-  const reps = $("#reps").value === "" ? null : Number($("#reps").value);
-  const sets = $("#sets").value === "" ? null : Number($("#sets").value);
-  const note = $("#note").value.trim();
+  const dateEl = $("#date");
+  const sessionEl = $("#sessionType");
+  const exerciseEl = $("#exercise");
+  const unitEl = $("#unit");
+  const weightEl = $("#weight");
+  const repsEl = $("#reps");
+  const setsEl = $("#sets");
+  const noteEl = $("#note");
+  if (!dateEl || !sessionEl || !exerciseEl || !unitEl || !weightEl || !repsEl || !setsEl || !noteEl) return;
+
+  const date = dateEl.value;
+  const sessionType = sessionEl.value;
+  const exercise = exerciseEl.value.trim();
+  const unit = unitEl.value;
+  const weight = weightEl.value === "" ? null : Number(weightEl.value);
+  const reps = repsEl.value === "" ? null : Number(repsEl.value);
+  const sets = setsEl.value === "" ? null : Number(setsEl.value);
+  const note = noteEl.value.trim();
 
   if (!date || !exercise) return;
 
@@ -185,9 +217,9 @@ $("#entryForm").addEventListener("submit", (ev) => {
 
   refreshAll();
   // keep exercise for fast logging, clear others
-  $("#weight").value = "";
-  $("#reps").value = "";
-  $("#note").value = "";
+  if (weightEl) weightEl.value = "";
+  if (repsEl) repsEl.value = "";
+  if (noteEl) noteEl.value = "";
 });
 
 // ---------- Delete entry
@@ -208,6 +240,7 @@ function escapeHtml(s) {
 
 function renderRecent() {
   const tbody = $("#recentTable tbody");
+  if (!tbody) return;
   tbody.innerHTML = "";
   state.entries
     .slice()
@@ -234,9 +267,9 @@ function renderRecent() {
 }
 
 function getFilteredEntries() {
-  const ex = $("#filterExercise").value;
-  const sess = $("#filterSession").value;
-  const txt = $("#filterText").value.trim().toLowerCase();
+  const ex = $("#filterExercise")?.value ?? "";
+  const sess = $("#filterSession")?.value ?? "";
+  const txt = $("#filterText")?.value?.trim().toLowerCase() ?? "";
 
   return state.entries.filter(e => {
     if (ex && e.exercise !== ex) return false;
@@ -247,7 +280,14 @@ function getFilteredEntries() {
 }
 
 function renderHistory() {
-<<<<<<< codex/add-bodyweight-tracking-feature-i6m5p6
+  const entries = getFilteredEntries();
+
+  const tbody = $("#historyTable tbody");
+  if (!tbody) return;
+  tbody.innerHTML = "";
+
+  const cards = $("#historyCards");
+  if (cards) cards.innerHTML = "";
   const entries = getFilteredEntries();
 
   const tbody = $("#historyTable tbody");
@@ -258,12 +298,6 @@ function renderHistory() {
 
   entries.forEach(e => {
     const noteText = e.note?.trim() ? e.note : "—";
-
-=======
-  const tbody = $("#historyTable tbody");
-  tbody.innerHTML = "";
-  getFilteredEntries().forEach(e => {
->>>>>>> main
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td>${e.date}</td>
@@ -273,7 +307,6 @@ function renderHistory() {
       <td>${escapeHtml(formatWeight(e))}</td>
       <td>${e.reps ?? ""}</td>
       <td>${e.sets ?? ""}</td>
-<<<<<<< codex/add-bodyweight-tracking-feature-i6m5p6
       <td class="note">${escapeHtml(noteText)}</td>
       <td><button class="ghost" data-del="${e.id}">🗑️</button></td>
     `;
@@ -296,32 +329,32 @@ function renderHistory() {
         <button class="ghost" data-del="${e.id}">🗑️ Supprimer</button>
       </div>
     `;
-    cards.appendChild(card);
+    if (cards) cards.appendChild(card);
   });
 
-  document.querySelectorAll('#historyTable button[data-del], #historyCards button[data-del]').forEach(btn => {
-=======
-      <td class="note">${escapeHtml(e.note)}</td>
-      <td><button class="ghost" data-del="${e.id}">🗑️</button></td>
-    `;
-    tbody.appendChild(tr);
-  });
+  if (cards && entries.length === 0) {
+    cards.innerHTML = `<div class="card muted">Aucune entrée pour ces filtres.</div>`;
+  }
 
-  tbody.querySelectorAll("button[data-del]").forEach(btn => {
->>>>>>> main
+  const deleteButtons = [...tbody.querySelectorAll('button[data-del]')];
+  if (cards) deleteButtons.push(...cards.querySelectorAll('button[data-del]'));
+  deleteButtons.forEach(btn => {
     btn.addEventListener("click", () => deleteEntry(btn.dataset.del));
   });
 }
 
-$("#clearFilters").addEventListener("click", () => {
-  $("#filterExercise").value = "";
-  $("#filterSession").value = "";
-  $("#filterText").value = "";
+on("#clearFilters", "click", () => {
+  const ex = $("#filterExercise");
+  const sess = $("#filterSession");
+  const txt = $("#filterText");
+  if (ex) ex.value = "";
+  if (sess) sess.value = "";
+  if (txt) txt.value = "";
   renderHistory();
 });
 
 ["#filterExercise", "#filterSession", "#filterText"].forEach(sel => {
-  $(sel).addEventListener("input", renderHistory);
+  on(sel, "input", renderHistory);
 });
 
 // ---------- Stats chart
@@ -333,6 +366,7 @@ function e1rm(weight, reps) {
 
 function renderPRBox(entries) {
   const pr = $("#prBox");
+  if (!pr) return;
   if (entries.length === 0) { pr.textContent = "Aucune donnée pour cet exercice."; return; }
 
   const maxWeight = Math.max(...entries.map(e => e.weight ?? -Infinity));
@@ -352,8 +386,13 @@ function renderPRBox(entries) {
 }
 
 function renderStats() {
-  const exName = $("#statsExercise").value;
-  const metric = $("#metric").value;
+  const exerciseSel = $("#statsExercise");
+  const metricSel = $("#metric");
+  const prBox = $("#prBox");
+  if (!exerciseSel || !metricSel || !prBox) return;
+
+  const exName = exerciseSel.value;
+  const metric = metricSel.value;
 
   const entries = state.entries
     .filter(e => e.exercise === exName)
@@ -377,6 +416,12 @@ function renderStats() {
   const finalData = clean.map(x => x.val);
 
   const ctx = $("#chart");
+  if (!ctx) return;
+  if (typeof Chart === "undefined") {
+    prBox.insertAdjacentHTML("beforeend", `<div class="small muted">Graphique indisponible (Chart.js non chargé).</div>`);
+    return;
+  }
+
   if (chart) chart.destroy();
   chart = new Chart(ctx, {
     type: "line",
@@ -392,8 +437,8 @@ function renderStats() {
   });
 }
 
-$("#statsExercise").addEventListener("change", renderStats);
-$("#metric").addEventListener("change", renderStats);
+on("#statsExercise", "change", renderStats);
+on("#metric", "change", renderStats);
 
 // ---------- Bodyweight
 let bwChart = null;
@@ -404,14 +449,17 @@ function deleteBW(id) {
   renderBody();
 }
 
-$("#bwForm").addEventListener("submit", (ev) => {
+on("#bwForm", "submit", (ev) => {
   ev.preventDefault();
-  const date = $("#bwDate").value;
-  const w = Number($("#bw").value);
+  const bwDate = $("#bwDate");
+  const bwInput = $("#bw");
+  if (!bwDate || !bwInput) return;
+  const date = bwDate.value;
+  const w = Number(bwInput.value);
   state.bodyweights.push({ id: uid(), date, weight: w });
   saveData();
   renderBody();
-  $("#bw").value = "";
+  bwInput.value = "";
 });
 
 function renderBody() {
@@ -420,14 +468,17 @@ function renderBody() {
   const data = rows.map(r => r.weight);
 
   const ctx = $("#bwChart");
-  if (bwChart) bwChart.destroy();
-  bwChart = new Chart(ctx, {
-    type: "line",
-    data: { labels, datasets: [{ label: "Poids (kg)", data, tension: 0.2 }] },
-    options: { responsive: true, plugins: { legend: { display:false } } }
-  });
+  if (ctx && typeof Chart !== "undefined") {
+    if (bwChart) bwChart.destroy();
+    bwChart = new Chart(ctx, {
+      type: "line",
+      data: { labels, datasets: [{ label: "Poids (kg)", data, tension: 0.2 }] },
+      options: { responsive: true, plugins: { legend: { display:false } } }
+    });
+  }
 
   const tbody = $("#bwTable tbody");
+  if (!tbody) return;
   tbody.innerHTML = "";
   rows.slice().reverse().forEach(r => {
     const tr = document.createElement("tr");
@@ -448,7 +499,7 @@ function getExportJson() {
   return JSON.stringify(state, null, 2);
 }
 
-$("#exportBtn").addEventListener("click", () => {
+on("#exportBtn", "click", () => {
   const blob = new Blob([getExportJson()], { type: "application/json" });
   const a = document.createElement("a");
   const url = URL.createObjectURL(blob);
@@ -460,12 +511,13 @@ $("#exportBtn").addEventListener("click", () => {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 });
 
-$("#extractBtn").addEventListener("click", async () => {
+on("#extractBtn", "click", async () => {
   const output = $("#extractOutput");
+  if (!output) return;
   output.value = getExportJson();
   output.focus();
   output.select();
-
+ 
   try {
     await navigator.clipboard.writeText(output.value);
     alert("JSON copié dans le presse-papiers.");
@@ -474,7 +526,7 @@ $("#extractBtn").addEventListener("click", async () => {
   }
 });
 
-$("#importFile").addEventListener("change", async (ev) => {
+on("#importFile", "change", async (ev) => {
   const file = ev.target.files?.[0];
   if (!file) return;
   try {
@@ -497,7 +549,7 @@ $("#importFile").addEventListener("change", async (ev) => {
   }
 });
 
-$("#wipeBtn").addEventListener("click", () => {
+on("#wipeBtn", "click", () => {
   const ok = confirm("Tout effacer sur CET appareil ? (tu peux exporter avant)");
   if (!ok) return;
   localStorage.removeItem(STORAGE_KEY);
@@ -516,8 +568,10 @@ function refreshAll() {
 }
 
 // init
-$("#date").value = todayISO();
-$("#bwDate").value = todayISO();
+const dateEl = $("#date");
+const bwDateEl = $("#bwDate");
+if (dateEl) dateEl.value = todayISO();
+if (bwDateEl) bwDateEl.value = todayISO();
 refreshAll();
 updateExerciseHint();
 setTab("log");
