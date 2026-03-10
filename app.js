@@ -247,6 +247,7 @@ function getFilteredEntries() {
 }
 
 function renderHistory() {
+<<<<<<< codex/add-bodyweight-tracking-feature-i6m5p6
   const entries = getFilteredEntries();
 
   const tbody = $("#historyTable tbody");
@@ -258,6 +259,11 @@ function renderHistory() {
   entries.forEach(e => {
     const noteText = e.note?.trim() ? e.note : "—";
 
+=======
+  const tbody = $("#historyTable tbody");
+  tbody.innerHTML = "";
+  getFilteredEntries().forEach(e => {
+>>>>>>> main
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td>${e.date}</td>
@@ -267,6 +273,7 @@ function renderHistory() {
       <td>${escapeHtml(formatWeight(e))}</td>
       <td>${e.reps ?? ""}</td>
       <td>${e.sets ?? ""}</td>
+<<<<<<< codex/add-bodyweight-tracking-feature-i6m5p6
       <td class="note">${escapeHtml(noteText)}</td>
       <td><button class="ghost" data-del="${e.id}">🗑️</button></td>
     `;
@@ -293,6 +300,15 @@ function renderHistory() {
   });
 
   document.querySelectorAll('#historyTable button[data-del], #historyCards button[data-del]').forEach(btn => {
+=======
+      <td class="note">${escapeHtml(e.note)}</td>
+      <td><button class="ghost" data-del="${e.id}">🗑️</button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  tbody.querySelectorAll("button[data-del]").forEach(btn => {
+>>>>>>> main
     btn.addEventListener("click", () => deleteEntry(btn.dataset.del));
   });
 }
