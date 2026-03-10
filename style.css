@@ -162,6 +162,48 @@ tbody tr:nth-child(even) { background: rgba(124, 58, 237, 0.04); }
 
 td.note { white-space: normal; min-width: 180px; }
 
+
+.historyCards { display: none; }
+
+.historyCard {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 12px;
+  margin: 10px 0;
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.08);
+}
+
+.historyCardGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 7px;
+}
+
+.historyItem {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 8px;
+  align-items: start;
+}
+
+.historyLabel {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.historyValue {
+  font-size: 14px;
+  color: var(--fg);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.historyCardActions {
+  margin-top: 10px;
+}
+
 .hint { margin-top: -2px; font-size: 12px; color: var(--muted); }
 
 .pr {
@@ -186,7 +228,7 @@ td.note { white-space: normal; min-width: 180px; }
 
 .fileBtn input { display: none; }
 
-@media (max-width: 560px) {
+@media (max-width: 768px) {
   header.wrap { position: static; backdrop-filter: none; background: transparent; border-bottom: none; }
   .wrap { padding: 12px; }
   .card { padding: 12px; border-radius: 12px; }
@@ -204,10 +246,18 @@ td.note { white-space: normal; min-width: 180px; }
     display: none;
   }
 
-  #historyTable th:nth-child(2),
-  #historyTable td:nth-child(2),
-  #historyTable th:nth-child(8),
-  #historyTable td:nth-child(8) {
+
+  .history-table-wrap {
     display: none;
   }
+
+  #historyCards {
+    display: block;
+    overflow-x: hidden;
+  }
+
+  .historyItem {
+    grid-template-columns: 96px 1fr;
+  }
+
 }

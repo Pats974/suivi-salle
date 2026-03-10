@@ -247,9 +247,23 @@ function getFilteredEntries() {
 }
 
 function renderHistory() {
+<<<<<<< codex/add-bodyweight-tracking-feature-i6m5p6
+  const entries = getFilteredEntries();
+
+  const tbody = $("#historyTable tbody");
+  tbody.innerHTML = "";
+
+  const cards = $("#historyCards");
+  cards.innerHTML = "";
+
+  entries.forEach(e => {
+    const noteText = e.note?.trim() ? e.note : "—";
+
+=======
   const tbody = $("#historyTable tbody");
   tbody.innerHTML = "";
   getFilteredEntries().forEach(e => {
+>>>>>>> main
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td>${e.date}</td>
@@ -259,6 +273,34 @@ function renderHistory() {
       <td>${escapeHtml(formatWeight(e))}</td>
       <td>${e.reps ?? ""}</td>
       <td>${e.sets ?? ""}</td>
+<<<<<<< codex/add-bodyweight-tracking-feature-i6m5p6
+      <td class="note">${escapeHtml(noteText)}</td>
+      <td><button class="ghost" data-del="${e.id}">🗑️</button></td>
+    `;
+    tbody.appendChild(tr);
+
+    const card = document.createElement("article");
+    card.className = "historyCard";
+    card.innerHTML = `
+      <div class="historyCardGrid">
+        <div class="historyItem"><span class="historyLabel">Date</span><span class="historyValue">${e.date}</span></div>
+        <div class="historyItem"><span class="historyLabel">Séance</span><span class="historyValue">${escapeHtml(e.sessionType)}</span></div>
+        <div class="historyItem"><span class="historyLabel">Exercice</span><span class="historyValue">${escapeHtml(e.exercise)}</span></div>
+        <div class="historyItem"><span class="historyLabel">Unité</span><span class="historyValue">${escapeHtml(e.unit)}</span></div>
+        <div class="historyItem"><span class="historyLabel">Poids</span><span class="historyValue">${escapeHtml(formatWeight(e)) || "—"}</span></div>
+        <div class="historyItem"><span class="historyLabel">Reps</span><span class="historyValue">${e.reps ?? "—"}</span></div>
+        <div class="historyItem"><span class="historyLabel">Séries</span><span class="historyValue">${e.sets ?? "—"}</span></div>
+        <div class="historyItem"><span class="historyLabel">Note</span><span class="historyValue">${escapeHtml(noteText)}</span></div>
+      </div>
+      <div class="historyCardActions">
+        <button class="ghost" data-del="${e.id}">🗑️ Supprimer</button>
+      </div>
+    `;
+    cards.appendChild(card);
+  });
+
+  document.querySelectorAll('#historyTable button[data-del], #historyCards button[data-del]').forEach(btn => {
+=======
       <td class="note">${escapeHtml(e.note)}</td>
       <td><button class="ghost" data-del="${e.id}">🗑️</button></td>
     `;
@@ -266,6 +308,7 @@ function renderHistory() {
   });
 
   tbody.querySelectorAll("button[data-del]").forEach(btn => {
+>>>>>>> main
     btn.addEventListener("click", () => deleteEntry(btn.dataset.del));
   });
 }
